@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title></title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<script src="libs/angular.min.js"></script>
+<script src="app/app.js"></script>
+<script src="app/home/controllers/homeController.js"></script>
+
+
+
+
+<link href="css/bootstrap.min.css" rel="stylesheet" />
+</head>
+<body style="background: #DCDCDC">
+	<div ng-app="myApp" ng-controller="myController" >
+
+		<h1>hi {{name}}</h1>
+
+
+		<div class="relative">
+			<h4 class="heading"> Add Car Details</h4>
+			<hr width="700">
+
+			<div class="col-md-12 col-lg-12 col-sm-12 box-theme">
+				<div class="row">
+					<div class="col-md-12 col-lg-12 col-sm-12">
+						
+
+						<div class="col-md-4 col-lg-4 col-sm-4">
+
+
+							<label>Model Name</label> <input type="text" class="form-control"
+								alng-model="modelInfo.model" />
+						</div>
+						<div class="col-md-4 col-lg-4 col-sm-4">
+
+
+							<label>Maker Name</label> <input type="text"
+								class="form-control"
+								ng-model="modelInfo.make" />
+						</div>
+						<div class="col-md-4 col-lg-4 col-sm-4">
+						<label>year</label>
+						<input type="text" class="form-control" alng-model="modelInfo.year"/></div>
+					</div>
+				</div>
+				<div class="row">
+				<div class="col-lg-12 col-md-12 col-sm-12">
+				<div class="col-md-4 col-sm-4 col-lg-4" >
+				<label>Description</label>
+				<textarea class="form-control" alng-model="modelInfo.description" ></textarea>
+				</div>
+				</div>
+				</div>
+
+
+				<h4 class="heading">Show Car</h4>
+				<hr width="700">
+				<div class="row">
+					<div class="col-md-12 col-lg-12 col-sm-12">
+						<div class="col-md-4 col-lg-4 col-sm-4">
+
+							<label>Home Address </label> <input type="text"
+								class="form-control" />
+						</div>
+
+						<div class="col-md-4 col-lg-4 col-sm-4">
+
+							<label>Street Address </label> <input type="text"
+								class="form-control" />
+						</div>
+
+						<div class="col-md-4 col-lg-4 col-sm-4">
+
+
+							<label>Country </label> <select class="form-control"
+										ng-model="personalInfo.country"
+										ng-options="country.name for country in countryList" >
+										<option value="">-Select Country-</option>
+									</select> 
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-12 col-lg-12 col-sm-12">
+						<div class="col-md-4 col-lg-4 col-sm-4">
+
+							<label>State</label> <select class="form-control"
+										ng-model="personalInfo.state"
+										ng-options="state.name for state in (allCountryStateList| filter:{'countryid':personalInfo.country.id}:true)" >
+										<option value="">-Select State-</option>
+									</select> 
+									
+									{{allCountryStateList}}
+						</div>
+
+						<div class="col-md-4 col-lg-4 col-sm-4">
+
+							<label>City</label> <input type="text" class="form-control" />
+						</div>
+
+						<div class="col-md-4 col-lg-4 col-sm-4">
+
+
+							<label>Zip/Pincode</label> <input type="text"
+								class="form-control" />
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-12 col-lg-12 col-sm-12">
+						<div class="col-md-4 col-lg-4 col-sm-4">
+
+							<label>Bissness Pnone </label> <input type="text"
+								class="form-control" />
+						</div>
+
+						<div class="col-md-4 col-lg-4 col-sm-4">
+
+							<label>Mobile </label> <input type="text" class="form-control" />
+						</div>
+
+						<div class="col-md-4 col-lg-4 col-sm-4">
+
+
+							<label>Email</label> <input type="text" class="form-control" />
+							<div>{{ personalInfo | json}}</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>
