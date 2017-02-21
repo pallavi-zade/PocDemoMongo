@@ -1,7 +1,7 @@
 package com.controller;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.List; 
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.model.CustomerInfo;
 import com.model.FileToArray;
+import com.model.InventaryInfo;
 import com.model.Mapping;
 import com.model.PaymentInfo;
 import com.model.ProLevel;
@@ -24,40 +25,44 @@ import com.model.ProductLevelMapping;
 import com.model.ProductTypeLevel;
 import com.model.PurchaseInfo;
 import com.model.SalesInfo;
-import com.repository.CarMongoRepository;
-import com.repository.CarSearchRepository;
+import com.model.sql.UserMaster;
+import com.repository.ProductMongoRepository;
+import com.repository.ProductSearchRepository;
 import com.repository.CustomerMongoRepository;
+import com.repository.InventaryMongoRepository;
 import com.repository.PaymentMongoRepository;
 import com.repository.ProductMapping;
 import com.repository.ProductTypeLevelMongoRepository;
 import com.repository.PurchaseMongoRepository;
 import com.repository.SaleMongoRepository;
+import com.service.sql.UserMasterService;
 
 @RestController
-public class CarController {
+public class MainController {
 
 	@Autowired
-	CarMongoRepository carRepository;
-
-	@Autowired
-	CarSearchRepository carSearchRepository;
+	ProductMongoRepository productRepository;
 	@Autowired
 	ProductTypeLevelMongoRepository ProductTypeLevelMongoRepository;
 	@Autowired
 	ProductMapping productMapping;
 	@Autowired
-	SaleMongoRepository saleMongoRepository;
+	SaleMongoRepository  saleMongoRepository;
 	@Autowired
 	PurchaseMongoRepository purchaseMongoRepository;
 	@Autowired
 	CustomerMongoRepository customerMongoRepository;
 	@Autowired
 	PaymentMongoRepository paymentMongoRepository;
+	@Autowired 
+	InventaryMongoRepository inventaryMongoRepository;
+	@Autowired 
+	UserMasterService userMasterService;
 
 	@RequestMapping("/home")
 	public @ResponseBody ResponseEntity<ArrayList<Product>> home(Model model) {
-		model.addAttribute("carList", carRepository.findAll());
-		ArrayList<Product> array = (ArrayList<Product>) carRepository.findAll();
+		model.addAttribute("carList", productRepository.findAll());
+		ArrayList<Product> array = (ArrayList<Product>) productRepository.findAll();
 		return new ResponseEntity<ArrayList<Product>>(array, HttpStatus.OK);
 	}
 
@@ -68,7 +73,7 @@ public class CarController {
 			Product product = new Product();
 			product.setName(string);
 			System.out.println(product + "{}}}}}}}}}}}}}}}}}}}}}}}}}");
-			carRepository.save(product);
+			productRepository.save(product);
 		}
 
 		return "redirect:home";
@@ -76,10 +81,17 @@ public class CarController {
 	
 	@RequestMapping(value = "/NewCollections", method = RequestMethod.POST)
 	public String addNewCollections() {
-	customerMongoRepository.save(new CustomerInfo());
-	paymentMongoRepository.save(new PaymentInfo());
-	saleMongoRepository.save(new SalesInfo());
-	purchaseMongoRepository.save(new PurchaseInfo());
+		ArrayList<UserMaster> array = (ArrayList<UserMaster>) userMasterService.getUser();
+		for (UserMaster userMaster : array) {
+			CustomerInfo customerInfo=new CustomerInfo();
+			customerInfo.setCustomerName(userMaster.getFirstName());
+			customerMongoRepository.save(customerInfo);
+		}
+	
+	//paymentMongoRepository.save(new PaymentInfo());
+	//saleMongoRepository.save(new SalesInfo());
+	//purchaseMongoRepository.save(new PurchaseInfo());
+	//inventaryMongoRepository.save(new InventaryInfo());
 	
 
 		return "redirect:home";
@@ -109,8 +121,8 @@ public class CarController {
 					ProductLevelMapping productLevelMapping = new ProductLevelMapping();
 					System.out.println(":::::::::::Mapping:::::::::::::::::"+mappingIndex+":::::::Return from ProductLevelType:::::::::::::::::"+ProductTypeLevelMongoRepository.returnProductLevelForMapping(mappingIndex));
 					productLevelMapping.setProductTypeLevelId(ProductTypeLevelMongoRepository.returnProductLevelForMapping(mappingIndex).getId()); 
-					System.out.println(":::::::::::::::Name:::::::::::"+object.getName()+":::::::::::::::Return from Product:::::::::::"+carSearchRepository.returnProductForMapping(object.getName()).getId());
-					productLevelMapping.setProductId(carSearchRepository.returnProductForMapping(object.getName()).getId());
+					System.out.println(":::::::::::::::Name:::::::::::"+object.getName()+":::::::::::::::Return from Product:::::::::::"+productRepository.returnProductForMapping(object.getName()).getId());
+					productLevelMapping.setProductId(productRepository.returnProductForMapping(object.getName()).getId());
 					
 					
 			         productMapping.save(productLevelMapping);
@@ -124,17 +136,23 @@ public class CarController {
 	}
 	
 	
-	@RequestMapping(value = "/search")
-	public String search(Model model, @RequestParam String search) {
-		model.addAttribute("carList", carSearchRepository.searchCars(search));
-		model.addAttribute("search", search);
+
+	
+	@RequestMapping(value = "/saveSqlData")
+	public String saveSqlData() {
+		UserMaster user=new UserMaster();
+		user.setEmail("pallavi@gmail.com");
+		user.setFirstName("pallavi");
+		userMasterService.saveUser(user);
 		return "home";
 	}
 	
-	@RequestMapping(value = "/me")
-	public String search() {
-	
-		return "home";
+
+	@RequestMapping("/readSqlData")
+	public @ResponseBody ResponseEntity<ArrayList<UserMaster>> readSqlData() {
+		
+		ArrayList<UserMaster> array = (ArrayList<UserMaster>) userMasterService.getUser();
+		return new ResponseEntity<ArrayList<UserMaster>>(array, HttpStatus.OK);
 	}
 	
 	

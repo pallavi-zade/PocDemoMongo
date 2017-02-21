@@ -9,12 +9,12 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
-
+  
 import com.model.Product;
 import com.model.ProductTypeLevel;
-
+ 
 @Repository
-public class CarSearchRepository implements CarMongoRepository {
+public class ProductSearchRepository implements ProductMongoRepository {
 
 	@Autowired
 	MongoTemplate mongoTemplate;
